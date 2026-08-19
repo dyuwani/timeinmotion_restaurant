@@ -1,7 +1,4 @@
-const { kv } = require('@vercel/kv');
-
-const MAX_SESSIONS = 50;        // how many sessions to keep in the index
-const TTL_SECONDS  = 60 * 60 * 24 * 90; // 90-day expiry per session
+const { getSupabase } = require('./_supabase');
 
 module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -14,28 +11,21 @@ module.exports = async function handler(req, res) {
     if (!sessionId || !Array.isArray(tables))
       return res.status(400).json({ error: 'sessionId and tables[] are required' });
 
+    const supabase = getSupabase();
     const now = new Date().toISOString();
+    const finalLabel = label || sessionId;
+    const txCount = tables.reduce((sum, t) => sum + (t.transactions?.length || 0), 0);
 
-    // ── Full session payload ──────────────────────────────────────────
-    const session = { id: sessionId, label: label || sessionId, savedAt: now, tables };
-    await kv.set(`session:${sessionId}`, JSON.stringify(session), { ex: TTL_SECONDS });
-
-    // ── Update index list ─────────────────────────────────────────────
-    const raw  = await kv.get('sessions:index');
-    let   list = raw ? JSON.parse(raw) : [];
-
-    // Remove stale entry for same ID, add fresh one at top
-    list = list.filter(s => s.id !== sessionId);
-    list.unshift({
-      id:         sessionId,
-      label:      session.label,
-      savedAt:    now,
-      tableCount: tables.length,
-      txCount:    tables.reduce((sum, t) => sum + (t.transactions?.length || 0), 0),
+    const { error } = await supabase.from('sessions').upsert({
+      id: sessionId,
+      label: finalLabel,
+      saved_at: now,
+      tables,
+      table_count: tables.length,
+      tx_count: txCount,
     });
-    list = list.slice(0, MAX_SESSIONS);
 
-    await kv.set('sessions:index', JSON.stringify(list), { ex: TTL_SECONDS });
+    if (error) throw error;
 
     return res.status(200).json({ success: true, sessionId, savedAt: now });
   } catch (err) {

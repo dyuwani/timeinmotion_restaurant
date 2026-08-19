@@ -1,4 +1,4 @@
-const { kv } = require('@vercel/kv');
+const { getSupabase } = require('./_supabase');
 
 module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -10,11 +10,23 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'id query param required' });
 
   try {
-    const raw = await kv.get(`session:${id}`);
-    if (!raw)
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('id, label, saved_at, tables')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data)
       return res.status(404).json({ error: 'Session not found' });
 
-    const session = JSON.parse(raw);
+    const session = {
+      id: data.id,
+      label: data.label,
+      savedAt: data.saved_at,
+      tables: data.tables,
+    };
     return res.status(200).json({ success: true, session });
   } catch (err) {
     console.error('[load]', err);

@@ -156,6 +156,40 @@ button{cursor:pointer;}
   .progress-track{flex-basis:100%;}
 
   .modal{width:92vw;padding:16px;}
+
+  /* Steps table → stacked cards, no horizontal scroll, actions always visible */
+  .tbl-outer{overflow-x:visible;}
+  .min-w{min-width:0;}
+  .tbl-header{display:none;}
+  .tbl-footer{min-width:0;padding:10px 12px;}
+  .legend-hint{margin-left:0;width:100%;}
+
+  .step-row{
+    grid-template-columns:20px 1fr 1fr 1fr;
+    grid-template-areas:
+      "num name name name"
+      ".   activity activity activity"
+      ".   start end dur"
+      ".   obs obs obs"
+      ".   actions actions actions";
+    row-gap:6px;
+    padding:10px 12px;
+  }
+  .step-row > :nth-child(1){grid-area:num;}
+  .step-row > :nth-child(2){grid-area:name;}
+  .step-row > :nth-child(3){grid-area:activity;font-size:10px;}
+  .step-row > :nth-child(4){grid-area:start;}
+  .step-row > :nth-child(5){grid-area:end;}
+  .step-row > :nth-child(6){grid-area:dur;}
+  .step-row > :nth-child(7){grid-area:obs;}
+  .step-row > :nth-child(8){grid-area:actions;}
+  .step-row > :nth-child(4)::before{content:"Start ";font-size:9px;color:#64748B;}
+  .step-row > :nth-child(5)::before{content:"End ";font-size:9px;color:#64748B;}
+  .step-row > :nth-child(6)::before{content:"Dur ";font-size:9px;color:#64748B;}
+
+  .action-cell{justify-content:flex-start;}
+  .abtn,.abtn-reset{padding:8px 14px;font-size:12px;flex:0 0 auto;}
+  .obs-input{padding:6px 8px;}
 }
 </style>
 </head>

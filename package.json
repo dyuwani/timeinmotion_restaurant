@@ -1,0 +1,11 @@
+{
+  "name": "medusa-tim-tracker",
+  "version": "1.0.0",
+  "description": "Time in Motion Tracker — Medusa by Palace · Modulus Labs",
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

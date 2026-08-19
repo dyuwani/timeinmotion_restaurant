@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Time in Motion · Fine Dining · Medusa by Palace</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0A0A0F;color:#E2E8F0;font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:13px;}
+input,button,select{font-family:inherit;}
+button{cursor:pointer;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:#0A0A14;}
+::-webkit-scrollbar-thumb{background:#2E2E3E;border-radius:4px;}
+
+/* ── HEADER ── */
+.header{background:#0F0F1A;border-bottom:1px solid #1E1E2E;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+.logo-bar{display:flex;align-items:center;gap:10px;}
+.logo-stripe{width:5px;height:32px;border-radius:3px;background:linear-gradient(180deg,#6E56F8,#FF6B2B);flex-shrink:0;}
+.logo-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.logo-sub{font-size:10px;color:#64748B;margin-top:1px;}
+.clock{font-family:monospace;font-size:14px;color:#6E56F8;font-weight:700;background:#6E56F810;padding:4px 10px;border-radius:6px;border:1px solid #6E56F830;}
+.hdr-btns{display:flex;gap:8px;align-items:center;}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid #2E2E3E;background:#1E1E2E;color:#E2E8F0;}
+.btn-sm.active{border-color:#FF6B2B;color:#FF6B2B;background:#FF6B2B10;}
+.btn-sm.purple{border-color:#6E56F8;color:#6E56F8;background:#6E56F810;}
+.btn-sm.green{border-color:#10B981;color:#10B981;background:#10B98110;}
+
+/* ── SESSION BAR ── */
+.session-bar{background:#080810;border-bottom:1px solid #1A1A2E;padding:7px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.session-label-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:200px;}
+.session-lbl{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+.session-input{background:#12121A;border:1px solid #1E1E2E;color:#E2E8F0;border-radius:4px;padding:4px 10px;font-size:12px;outline:none;width:240px;}
+.session-input:focus{border-color:#6E56F860;}
+.save-status{font-size:11px;color:#64748B;font-family:monospace;margin-left:4px;white-space:nowrap;}
+.save-status.saved{color:#10B981;}
+.save-status.saving{color:#F59E0B;}
+.save-status.error{color:#EF4444;}
+
+/* ── TABLE TABS ── */
+.table-tabs{background:#0A0A14;border-bottom:1px solid #1E1E2E;padding:0 20px;display:flex;align-items:stretch;overflow-x:auto;min-height:42px;}
+.ttab{display:flex;align-items:center;gap:5px;padding:0 12px;cursor:pointer;font-size:12px;color:#64748B;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;}
+.ttab.sel{font-weight:700;color:#E2E8F0;border-bottom-color:#6E56F8;}
+.ttab-pill{font-size:9px;background:#6E56F830;color:#6E56F8;border-radius:10px;padding:1px 5px;}
+.ttab-x{font-size:10px;color:#374151;padding:2px;}
+.add-tab-btn{padding:0 14px;background:none;border:none;color:#6E56F8;font-size:20px;border-bottom:2px solid transparent;}
+
+/* ── SUMMARY PANEL ── */
+.summary-panel{background:#0F0F1A;border-bottom:1px solid #1E1E2E;padding:14px 20px;}
+.sec-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.summary-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.summary-card{background:#12121A;border-radius:6px;padding:7px 10px;min-width:120px;}
+.sc-label{font-size:9px;text-transform:uppercase;font-weight:600;letter-spacing:.05em;margin-bottom:2px;}
+.sc-value{font-family:monospace;font-size:14px;font-weight:700;color:#E2E8F0;}
+.sc-sub{font-size:9px;color:#64748B;margin-top:1px;}
+.kitchen-section{margin-top:12px;}
+.kitchen-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #1A1A28;}
+.kitchen-row:last-child{border-bottom:none;}
+.kitchen-label{font-size:11px;font-weight:600;color:#E2E8F0;min-width:120px;}
+.kitchen-time{font-family:monospace;font-size:12px;font-weight:700;color:#FF6B2B;min-width:60px;}
+.kitchen-detail{font-size:10px;color:#64748B;}
+.pacing-time{font-family:monospace;font-size:11px;color:#A78BFA;min-width:60px;}
+
+/* ── BODY ── */
+.body-wrap{padding:14px 20px;}
+.tx-selector{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.tx-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;}
+.tx-tab{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid #1E1E2E;background:transparent;color:#64748B;}
+.tx-tab.sel{font-weight:700;border-color:#6E56F8;background:#6E56F815;color:#6E56F8;}
+.tx-new{padding:4px 12px;border-radius:20px;font-size:12px;border:1px dashed #6E56F850;background:transparent;color:#6E56F8;}
+
+/* ── PROGRESS ── */
+.prog-bar{background:#12121A;border:1px solid #1E1E2E;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:12px;}
+.prog-item-label{font-size:9px;color:#64748B;text-transform:uppercase;letter-spacing:.07em;}
+.prog-item-val{font-family:monospace;font-size:15px;font-weight:700;}
+.progress-track{flex:1;min-width:100px;}
+.progress-bg{background:#1E1E2E;border-radius:4px;height:6px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s;}
+
+/* ── STEPS TABLE ── */
+.steps-table{background:#12121A;border:1px solid #1E1E2E;border-radius:10px;overflow:hidden;}
+.tbl-outer{overflow-x:auto;}
+.tbl-header,.step-row{display:grid;grid-template-columns:20px 175px 150px 82px 82px 72px 150px 100px;gap:0 6px;align-items:center;}
+.tbl-header{background:#0A0A14;padding:8px 14px;border-bottom:1px solid #1E1E2E;}
+.tbl-hdr-cell{font-size:9px;color:#64748B;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.min-w{min-width:860px;}
+.group-header{display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid #141420;border-top:1px solid #1A1A28;}
+.group-header-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+.group-header-opt{font-size:9px;color:#374151;margin-left:auto;}
+.step-row{padding:9px 14px;border-bottom:1px solid #0F0F1A;border-left:3px solid transparent;transition:background .2s;}
+.step-name{font-size:12px;font-weight:600;color:#E2E8F0;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.step-tags{display:flex;gap:3px;margin-top:2px;flex-wrap:wrap;}
+.step-tag{font-size:9px;padding:1px 5px;border-radius:10px;}
+.step-activity{font-family:monospace;font-size:11px;color:#94A3B8;}
+.mono{font-family:monospace;font-size:11px;}
+.dur-cell{font-family:monospace;font-size:12px;font-weight:700;}
+.obs-input{background:#0A0A0F;border:1px solid #1E1E2E;border-radius:4px;padding:4px 8px;font-size:11px;color:#E2E8F0;width:100%;outline:none;}
+.obs-input:focus{border-color:#6E56F860;}
+.action-cell{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+.abtn{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;}
+.abtn-start{background:#6E56F8;border:1px solid #6E56F8;color:#fff;}
+.abtn-fire{background:#FF6B2B;border:1px solid #FF6B2B;color:#fff;}
+.abtn-end{background:#F59E0B;border:1px solid #F59E0B;color:#000;}
+.abtn-skip{background:transparent;border:1px solid #374151;color:#9CA3AF;}
+.abtn-reset{background:transparent;border:1px solid #2E2E3E;color:#64748B;font-size:9px;}
+.done-check{font-size:12px;color:#10B981;font-weight:700;margin-right:2px;}
+.kt-badge{font-size:9px;background:#FF6B2B20;color:#FF6B2B;border-radius:10px;padding:1px 6px;font-weight:700;font-family:monospace;margin-left:4px;}
+.bottleneck-badge{font-size:9px;background:#EF444420;color:#EF4444;border-radius:10px;padding:1px 5px;font-weight:700;}
+.tbl-footer{padding:8px 14px;background:#0A0A14;border-top:1px solid #1E1E2E;display:flex;gap:12px;align-items:center;flex-wrap:wrap;min-width:860px;}
+.legend-item{display:flex;align-items:center;gap:4px;}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.legend-txt{font-size:10px;color:#64748B;}
+.legend-hint{font-size:10px;color:#374151;margin-left:auto;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(3px);}
+.modal-overlay.hidden{display:none;}
+.modal{background:#12121A;border:1px solid #2E2E3E;border-radius:12px;padding:24px;width:520px;max-width:90vw;max-height:80vh;display:flex;flex-direction:column;gap:14px;}
+.modal-title{font-size:15px;font-weight:700;color:#E2E8F0;}
+.modal-sub{font-size:11px;color:#64748B;}
+.sessions-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;min-height:100px;max-height:340px;}
+.session-item{background:#0A0A14;border:1px solid #1E1E2E;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;}
+.session-item:hover{border-color:#6E56F8;}
+.si-label{font-size:13px;font-weight:600;color:#E2E8F0;flex:1;}
+.si-meta{font-size:10px;color:#64748B;line-height:1.5;}
+.si-badge{font-size:9px;background:#6E56F820;color:#6E56F8;border-radius:10px;padding:2px 7px;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;}
+.modal-empty{font-size:12px;color:#374151;text-align:center;padding:24px;}
+.modal-loading{font-size:12px;color:#64748B;text-align:center;padding:24px;}
+.toast{position:fixed;bottom:24px;right:24px;background:#12121A;border:1px solid #2E2E3E;border-radius:8px;padding:10px 16px;font-size:12px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+.toast.ok{border-color:#10B981;color:#10B981;}
+.toast.err{border-color:#EF4444;color:#EF4444;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-bar">
+    <div class="logo-stripe"></div>
+    <div>
+      <div class="logo-title">Time in Motion &nbsp;·&nbsp; Fine Dining</div>
+      <div class="logo-sub">Medusa by Palace &nbsp;·&nbsp; POS/ECR Service Flow &nbsp;·&nbsp; Modulus Labs</div>
+    </div>
+  </div>
+  <div class="hdr-btns">
+    <div class="clock" id="clock">--:--:--</div>
+    <button class="btn-sm" id="summaryBtn" onclick="toggleSummary()">🔥 Kitchen Times</button>
+    <button class="btn-sm" onclick="exportCSV()">↓ CSV</button>
+  </div>
+</div>
+
+<!-- SESSION BAR -->
+<div class="session-bar">
+  <span class="session-lbl">Session</span>
+  <div class="session-label-wrap">
+    <input class="session-input" id="sessionLabel" placeholder="e.g. Medusa 19 Aug — First Seating" />
+    <span class="save-status" id="saveStatus">● Unsaved</span>
+  </div>
+  <button class="btn-sm green" onclick="saveSession()">💾 Save</button>
+  <button class="btn-sm purple" onclick="showLoadModal()">📂 Load Session</button>
+  <button class="btn-sm" onclick="newSession()">＋ New</button>
+</div>
+
+<!-- TABLE TABS -->
+<div class="table-tabs" id="tableTabs"></div>
+
+<!-- SUMMARY -->
+<div id="summaryPanel" class="summary-panel" style="display:none">
+  <div id="summaryContent"></div>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap" id="bodyWrap"></div>
+
+<!-- LOAD MODAL -->
+<div class="modal-overlay hidden" id="loadModal">
+  <div class="modal">
+    <div class="modal-title">📂 Load Saved Session</div>
+    <div class="modal-sub">Select a previously saved observation session to restore.</div>
+    <div class="sessions-list" id="sessionsList"><div class="modal-loading">Loading sessions…</div></div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   STEP DEFINITIONS
+═══════════════════════════════════════════════════════ */
+const TYPE_COLORS = { setup:"#6E56F8",order:"#3B82F6",fire:"#FF6B2B",serve:"#10B981",clear:"#64748B",payment:"#F59E0B",close:"#EF4444" };
+const TYPE_LABELS = { setup:"Setup",order:"Order",fire:"🔥 Fire",serve:"🍽️ Serve",clear:"↩ Clear",payment:"Payment",close:"Close" };
+const PHASE_LABELS = { setup:"Open",order:"Order",service:"Service",payment:"Payment",close:"Close" };
+
+const STEP_GROUPS = [
+  { id:"setup",label:"Table Setup",icon:"🪑",color:"#6E56F8",steps:[
+    {id:1,step:"Guest Seated",activity:"Table Opened / Cover Set",type:"setup",optional:false},
+    {id:2,step:"Menus Presented",activity:"Menu Handover",type:"setup",optional:false},
+    {id:3,step:"Water Service",activity:"Water Poured",type:"serve",optional:true},
+  ]},
+  { id:"order",label:"Order Phase",icon:"📋",color:"#3B82F6",steps:[
+    {id:4,step:"Aperitif Order Taken",activity:"Beverage Order Encoded",type:"order",optional:true},
+    {id:5,step:"Aperitif Served",activity:"Beverages Delivered",type:"serve",optional:true},
+    {id:6,step:"Food Order Taken",activity:"Course Order Encoded",type:"order",optional:false},
+    {id:7,step:"Order Submitted",activity:"ECR → POS",type:"order",optional:false},
+    {id:8,step:"Order Acknowledged",activity:"Kitchen / POS Confirmed",type:"order",optional:false},
+  ]},
+  { id:"amuse",label:"Amuse-Bouche",icon:"✨",color:"#FF6B2B",steps:[
+    {id:9,step:"FIRE: Amuse-Bouche",activity:"Kitchen Instruction",type:"fire",optional:true,fireId:"amuse"},
+    {id:10,step:"Amuse-Bouche Served",activity:"Course Delivered",type:"serve",optional:true,serveId:"amuse"},
+  ]},
+  { id:"bread",label:"Bread Service",icon:"🍞",color:"#C4A052",steps:[
+    {id:11,step:"FIRE: Bread & Butter",activity:"Bread Station Fired",type:"fire",optional:true,fireId:"bread"},
+    {id:12,step:"Bread Service",activity:"Bread & Butter Delivered",type:"serve",optional:true,serveId:"bread"},
+  ]},
+  { id:"starter",label:"Starter / First Course",icon:"🔥",color:"#FF6B2B",steps:[
+    {id:13,step:"FIRE: Starter",activity:"Kitchen Instruction",type:"fire",optional:false,fireId:"starter"},
+    {id:14,step:"Starter Served",activity:"Course Delivered",type:"serve",optional:false,serveId:"starter"},
+    {id:15,step:"Starter Cleared",activity:"Plates Removed",type:"clear",optional:false},
+  ]},
+  { id:"intermezzo",label:"Intermezzo",icon:"❄️",color:"#A78BFA",steps:[
+    {id:16,step:"Intermezzo / Sorbet",activity:"Palate Cleanser Delivered",type:"serve",optional:true},
+  ]},
+  { id:"main",label:"Main Course",icon:"🔥",color:"#FF6B2B",steps:[
+    {id:17,step:"FIRE: Main Course",activity:"Kitchen Instruction",type:"fire",optional:false,fireId:"main"},
+    {id:18,step:"Main Course Served",activity:"Course Delivered",type:"serve",optional:false,serveId:"main"},
+    {id:19,step:"Main Plates Cleared",activity:"Plates Removed",type:"clear",optional:false},
+  ]},
+  { id:"cheese",label:"Cheese Course",icon:"🧀",color:"#D4A843",steps:[
+    {id:20,step:"FIRE: Cheese Course",activity:"Kitchen Instruction",type:"fire",optional:true,fireId:"cheese"},
+    {id:21,step:"Cheese Course Served",activity:"Course Delivered",type:"serve",optional:true,serveId:"cheese"},
+    {id:22,step:"Cheese Cleared",activity:"Plates Removed",type:"clear",optional:true},
+  ]},
+  { id:"dessert",label:"Dessert",icon:"🔥",color:"#FF6B2B",steps:[
+    {id:23,step:"FIRE: Dessert",activity:"Kitchen Instruction",type:"fire",optional:false,fireId:"dessert"},
+    {id:24,step:"Dessert Served",activity:"Course Delivered",type:"serve",optional:false,serveId:"dessert"},
+    {id:25,step:"Mignardises",activity:"Petits Fours Presented",type:"serve",optional:true},
+  ]},
+  { id:"payment",label:"Settlement",icon:"💳",color:"#F59E0B",steps:[
+    {id:26,step:"Bill Requested",activity:"Generate Bill",type:"payment",optional:false},
+    {id:27,step:"Bill Presented",activity:"Bill to Table",type:"payment",optional:false},
+    {id:28,step:"Payment Initiated",activity:"Payment Processing",type:"payment",optional:false},
+    {id:29,step:"Payment Completed",activity:"Approved / Declined",type:"payment",optional:false},
+    {id:30,step:"Receipt Issued",activity:"Print / Digital Receipt",type:"payment",optional:false},
+    {id:31,step:"Table Closed",activity:"Settlement / Turnover",type:"close",optional:false},
+  ]},
+];
+const STEPS = STEP_GROUPS.flatMap(g=>g.steps.map(s=>({...s,group:g.id,groupLabel:g.label,groupColor:g.color,groupIcon:g.icon})));
+const FIRE_SERVE_PAIRS=[
+  {label:"Amuse-Bouche",fireId:9,serveId:10},{label:"Bread",fireId:11,serveId:12},
+  {label:"Starter",fireId:13,serveId:14},{label:"Main Course",fireId:17,serveId:18},
+  {label:"Cheese",fireId:20,serveId:21},{label:"Dessert",fireId:23,serveId:24},
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let tables=[],activeTableId=null,txCounter=100,tableCounter=10,showSummary=false;
+let sessionId=genSessionId(),autoSaveTimer=null;
+
+function genSessionId(){
+  const d=new Date();
+  return `medusa-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Date.now().toString(36)}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function fmtTime(d){if(!d)return"--:--:--";return(d instanceof Date?d:new Date(d)).toLocaleTimeString("en-PH",{hour12:false,hour:"2-digit",minute:"2-digit",second:"2-digit"});}
+function fmtDur(ms){if(ms===null||ms===undefined||ms<0)return"--";const s=Math.floor(ms/1000),m=Math.floor(s/60),sec=s%60;if(m===0)return sec+"s";return m+"m "+String(sec).padStart(2,"0")+"s";}
+function esc(str){return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function mkStep(){return{startTime:null,endTime:null,duration:null,observation:"",status:"pending"};}
+function mkTx(label){const steps={};STEPS.forEach(s=>{steps[s.id]=mkStep();});return{id:++txCounter,label:label||"Tx 1",steps,createdAt:new Date().toISOString()};}
+function mkTable(label){const tx=mkTx("Tx 1");return{id:++tableCounter,label:label||"Table 1",transactions:[tx],activeTxId:tx.id};}
+function getActiveTable(){return tables.find(t=>t.id===activeTableId);}
+function getActiveTx(){const t=getActiveTable();return t?t.transactions.find(tx=>tx.id===t.activeTxId):null;}
+function getDone(tx){return STEPS.filter(s=>tx.steps[s.id].status==="complete").length;}
+function getTotalDur(tx){
+  const starts=STEPS.map(s=>tx.steps[s.id].startTime).filter(Boolean).map(d=>new Date(d).getTime());
+  const ends=STEPS.map(s=>tx.steps[s.id].endTime).filter(Boolean).map(d=>new Date(d).getTime());
+  if(!starts.length||!ends.length)return null;
+  return Math.max(...ends)-Math.min(...starts);
+}
+function getKitchenTimes(tx){
+  return FIRE_SERVE_PAIRS.map(pair=>{
+    const fs=tx.steps[pair.fireId],ss=tx.steps[pair.serveId];
+    if(!fs||!ss||fs.status==="skipped"||ss.status==="skipped")return{label:pair.label,kt:null,pending:true};
+    const kt=(fs.startTime&&ss.startTime)?new Date(ss.startTime)-new Date(fs.startTime):null;
+    return{label:pair.label,kt,fired:fs.startTime,served:ss.startTime,fireStatus:fs.status,serveStatus:ss.status};
+  }).filter(p=>!p.pending);
+}
+function getMaxDurStepId(tx){let max=0,maxId=null;STEPS.forEach(s=>{if(tx.steps[s.id].duration>max){max=tx.steps[s.id].duration;maxId=s.id;}});return maxId;}
+
+/* ═══════════════════════════════════════════════════════
+   ACTIONS
+═══════════════════════════════════════════════════════ */
+function startStep(sid){const tx=getActiveTx();if(!tx)return;tx.steps[sid]={...tx.steps[sid],startTime:new Date().toISOString(),status:"active"};markUnsaved();render();}
+function endStep(sid){
+  const tx=getActiveTx();if(!tx)return;
+  const step=tx.steps[sid],end=new Date().toISOString();
+  tx.steps[sid]={...step,endTime:end,duration:step.startTime?new Date(end)-new Date(step.startTime):null,status:"complete"};
+  markUnsaved();render();
+}
+function skipStep(sid){const tx=getActiveTx();if(!tx)return;tx.steps[sid]={...tx.steps[sid],startTime:null,endTime:null,duration:null,status:"skipped"};markUnsaved();render();}
+function resetStep(sid){const tx=getActiveTx();if(!tx)return;tx.steps[sid]=mkStep();markUnsaved();render();}
+function setObs(sid,v){const tx=getActiveTx();if(tx){tx.steps[sid].observation=v;scheduleAutoSave();}}
+function addTable(){const n=tables.length+1;const t=mkTable("Table "+n);tables.push(t);activeTableId=t.id;markUnsaved();render();}
+function removeTable(id){if(tables.length===1)return;tables=tables.filter(t=>t.id!==id);if(activeTableId===id)activeTableId=tables[0].id;markUnsaved();render();}
+function setActiveTable(id){activeTableId=id;render();}
+function addTx(){const table=getActiveTable();if(!table)return;const n=table.transactions.length+1;const tx=mkTx("Tx "+n);table.transactions.push(tx);table.activeTxId=tx.id;markUnsaved();render();}
+function setActiveTx(txId){const t=getActiveTable();if(t){t.activeTxId=txId;render();}}
+function toggleSummary(){showSummary=!showSummary;render();}
+function startRenameTable(id){const t=tables.find(t=>t.id===id);const label=prompt("Rename table:",t?t.label:"");if(label!==null&&label.trim()){if(t)t.label=label.trim();markUnsaved();render();}}
+function newSession(){if(!confirm("Start a fresh session? Current unsaved data will be lost."))return;tables=[];txCounter=100;tableCounter=10;sessionId=genSessionId();document.getElementById('sessionLabel').value='';setSaveStatus('unsaved','● Unsaved');const t1=mkTable("Table 1");tables.push(t1);activeTableId=t1.id;render();}
+
+/* ═══════════════════════════════════════════════════════
+   SAVE / LOAD
+═══════════════════════════════════════════════════════ */
+function getSaveLabel(){return document.getElementById('sessionLabel').value.trim()||sessionId;}
+
+function setSaveStatus(state,msg){
+  const el=document.getElementById('saveStatus');
+  el.textContent=msg;
+  el.className='save-status '+state;
+}
+
+function markUnsaved(){setSaveStatus('','● Unsaved');scheduleAutoSave();}
+
+function scheduleAutoSave(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>saveSession(true),30000); // auto-save after 30s idle
+}
+
+async function saveSession(silent=false){
+  setSaveStatus('saving','◌ Saving…');
+  const label=getSaveLabel()||`Medusa ${new Date().toLocaleDateString('en-PH')}`;
+  try{
+    const res=await fetch('/api/save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sessionId,label,tables}),
+    });
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Save failed');
+    setSaveStatus('saved','✓ Saved '+(new Date().toLocaleTimeString('en-PH',{hour12:false})));
+    if(!silent)toast('Session saved ✓','ok');
+  }catch(err){
+    setSaveStatus('error','✕ Save failed');
+    if(!silent)toast('Save failed: '+err.message,'err');
+  }
+}
+
+async function showLoadModal(){
+  document.getElementById('loadModal').classList.remove('hidden');
+  const list=document.getElementById('sessionsList');
+  list.innerHTML='<div class="modal-loading">Loading sessions…</div>';
+  try{
+    const res=await fetch('/api/sessions');
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error);
+    const sessions=data.sessions||[];
+    if(!sessions.length){list.innerHTML='<div class="modal-empty">No saved sessions yet.<br>Save a session to see it here.</div>';return;}
+    list.innerHTML=sessions.map(s=>`
+      <div class="session-item" onclick="loadSession('${esc(s.id)}')">
+        <div style="flex:1">
+          <div class="si-label">${esc(s.label)}</div>
+          <div class="si-meta">${esc(s.id)} &nbsp;·&nbsp; ${s.tableCount} table${s.tableCount!==1?'s':''} &nbsp;·&nbsp; ${s.txCount||0} tx</div>
+          <div class="si-meta">${new Date(s.savedAt).toLocaleString('en-PH')}</div>
+        </div>
+        <span class="si-badge">Load →</span>
+      </div>`).join('');
+  }catch(err){
+    list.innerHTML=`<div class="modal-empty" style="color:#EF4444">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function loadSession(id){
+  closeModal();
+  try{
+    const res=await fetch(`/api/load?id=${encodeURIComponent(id)}`);
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error);
+    const s=data.session;
+    tables=s.tables;
+    sessionId=s.id;
+    document.getElementById('sessionLabel').value=s.label||'';
+    activeTableId=tables[0]?.id||null;
+    // Fix counters
+    tables.forEach(t=>{tableCounter=Math.max(tableCounter,t.id+1);t.transactions.forEach(tx=>{txCounter=Math.max(txCounter,tx.id+1);});});
+    setSaveStatus('saved','✓ Loaded: '+(new Date(s.savedAt).toLocaleTimeString('en-PH',{hour12:false})));
+    render();
+    toast('Session loaded ✓','ok');
+  }catch(err){
+    toast('Load failed: '+err.message,'err');
+  }
+}
+
+function closeModal(){document.getElementById('loadModal').classList.add('hidden');}
+
+function toast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show '+(type==='ok'?'ok':'err');
+  setTimeout(()=>{el.className='toast';},3000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════════ */
+function exportCSV(){
+  const hdr=["Table","Transaction","Group","Step #","Step","Type","POS/ECR Activity","Optional","Start Time","End Time","Duration (s)","Observation","Status"];
+  const rows=[hdr.join(",")];
+  tables.forEach(table=>{
+    table.transactions.forEach(tx=>{
+      STEPS.forEach(s=>{
+        const step=tx.steps[s.id];
+        rows.push([
+          '"'+table.label+'"','"'+tx.label+'"','"'+s.groupLabel+'"',s.id,'"'+s.step+'"',s.type,
+          '"'+s.activity+'"',s.optional?"Y":"N",
+          step.startTime?fmtTime(new Date(step.startTime)):"",
+          step.endTime?fmtTime(new Date(step.endTime)):"",
+          step.duration!==null?Math.floor(step.duration/1000):"",
+          '"'+(step.observation||'').replace(/"/g,'""')+'"',step.status
+        ].join(","));
+      });
+    });
+  });
+  const blob=new Blob([rows.join("\n")],{type:"text/csv"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="tim-fine-dining.csv";a.click();URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════════ */
+function render(){
+  const now=new Date();
+  document.getElementById("clock").textContent=fmtTime(now);
+
+  // ── TABLE TABS ──
+  let tabsHTML="";
+  tables.forEach(t=>{
+    const total=t.transactions.reduce((a,tx)=>a+getDone(tx),0);
+    const max=t.transactions.length*STEPS.length;
+    tabsHTML+=`<div class="ttab${t.id===activeTableId?" sel":""}" onclick="setActiveTable(${t.id})">
+      <span ondblclick="event.stopPropagation();startRenameTable(${t.id})">${esc(t.label)}</span>
+      ${total>0?`<span class="ttab-pill">${total}/${max}</span>`:""}
+      ${tables.length>1?`<span class="ttab-x" onclick="event.stopPropagation();removeTable(${t.id})">✕</span>`:""}
+    </div>`;
+  });
+  tabsHTML+=`<button class="add-tab-btn" onclick="addTable()">+</button>`;
+  document.getElementById("tableTabs").innerHTML=tabsHTML;
+
+  // ── SUMMARY ──
+  const sp=document.getElementById("summaryPanel");
+  sp.style.display=showSummary?"block":"none";
+  document.getElementById("summaryBtn").className="btn-sm"+(showSummary?" active":"");
+
+  const table=getActiveTable();
+  const tx=getActiveTx();
+
+  if(showSummary&&tx){
+    const kts=getKitchenTimes(tx);
+    const maxKt=kts.reduce((mx,p)=>p.kt>mx?p.kt:mx,-1);
+    const totalDur=getTotalDur(tx);
+    const done=getDone(tx);
+    let sc=`<div class="sec-label">Service Summary · ${esc(table?.label||"")} · Current Transaction</div>
+    <div class="summary-grid">
+      <div class="summary-card" style="border:1px solid #6E56F830"><div class="sc-label" style="color:#6E56F8">Total Dining Time</div><div class="sc-value">${totalDur!==null?fmtDur(totalDur):"—"}</div></div>
+      <div class="summary-card" style="border:1px solid #10B98130"><div class="sc-label" style="color:#10B981">Steps Complete</div><div class="sc-value">${done} / ${STEPS.length}</div></div>`;
+    const p28=tx.steps[28],p29=tx.steps[29];
+    const payTime=(p28&&p29&&p28.startTime&&p29.startTime)?new Date(p29.startTime)-new Date(p28.startTime):null;
+    sc+=`<div class="summary-card" style="border:1px solid #F59E0B30"><div class="sc-label" style="color:#F59E0B">Payment Processing</div><div class="sc-value">${payTime!==null?fmtDur(payTime):"—"}</div></div></div>`;
+    if(kts.length){
+      sc+=`<div class="kitchen-section"><div class="sec-label" style="margin-top:12px">🔥 Fire-to-Serve · Kitchen Execution Times</div>`;
+      kts.forEach(p=>{const isMax=p.kt===maxKt&&p.kt>0;sc+=`<div class="kitchen-row"><div class="kitchen-label">${esc(p.label)}</div><div class="kitchen-time" style="color:${isMax?"#EF4444":"#FF6B2B"}">${p.kt!==null?fmtDur(p.kt):"⏳ active"}</div><div class="kitchen-detail">Fired: ${p.fired?fmtTime(new Date(p.fired)):"—"} → Served: ${p.served?fmtTime(new Date(p.served)):"—"}${isMax?' <span style="color:#EF4444;font-size:9px;font-weight:700">◀ SLOWEST</span>':""}</div></div>`;});
+      sc+=`</div>`;
+    }
+    document.getElementById("summaryContent").innerHTML=sc;
+  }
+
+  if(!table||!tx){document.getElementById("bodyWrap").innerHTML="";return;}
+
+  const maxDurId=getMaxDurStepId(tx);
+  const done=getDone(tx);
+  const totalDur=getTotalDur(tx);
+  const activeCt=STEPS.filter(s=>tx.steps[s.id].status==="active").length;
+
+  let html=`<div class="tx-selector"><span class="tx-label">Transaction</span>`;
+  table.transactions.forEach((t,i)=>{
+    const d=getDone(t);
+    html+=`<button class="tx-tab${t.id===table.activeTxId?" sel":""}" onclick="setActiveTx(${t.id})">Tx ${i+1}${d>0?` <small style="opacity:.65;font-size:9px">(${d}/${STEPS.length})</small>`:""}</button>`;
+  });
+  html+=`<button class="tx-new" onclick="addTx()">+ New Seating</button></div>
+  <div class="prog-bar">
+    <div class="prog-item"><div class="prog-item-label">Total Dining Duration</div><div class="prog-item-val" style="color:#6E56F8">${totalDur!==null?fmtDur(totalDur):"--"}</div></div>
+    <div class="prog-item"><div class="prog-item-label">Steps Done</div><div class="prog-item-val" style="color:#10B981">${done} / ${STEPS.length}</div></div>
+    <div class="prog-item"><div class="prog-item-label">Active</div><div class="prog-item-val" style="color:#F59E0B">${activeCt}</div></div>
+    <div class="prog-item"><div class="prog-item-label">Seated At</div><div class="prog-item-val" style="color:#94A3B8;font-size:13px">${fmtTime(new Date(tx.createdAt))}</div></div>
+    <div class="progress-track"><div class="prog-item-label">Progress</div><div class="progress-bg"><div class="progress-fill" style="background:linear-gradient(90deg,#6E56F8,#FF6B2B,#10B981);width:${(done/STEPS.length)*100}%"></div></div></div>
+  </div>
+  <div class="steps-table"><div class="tbl-outer"><div class="min-w">
+  <div class="tbl-header"><div class="tbl-hdr-cell">#</div><div class="tbl-hdr-cell">Step</div><div class="tbl-hdr-cell">POS/ECR Activity</div><div class="tbl-hdr-cell">Start Time</div><div class="tbl-hdr-cell">End Time</div><div class="tbl-hdr-cell">Duration</div><div class="tbl-hdr-cell">Observation</div><div class="tbl-hdr-cell"></div></div>`;
+
+  STEP_GROUPS.forEach(group=>{
+    const groupDone=group.steps.filter(s=>tx.steps[s.id].status==="complete").length;
+    const pair=FIRE_SERVE_PAIRS.find(p=>group.steps.some(s=>s.id===p.fireId)&&group.steps.some(s=>s.id===p.serveId));
+    let ktBadge="";
+    if(pair){const fs=tx.steps[pair.fireId],ss=tx.steps[pair.serveId];if(fs&&ss&&fs.startTime&&ss.startTime){const kt=new Date(ss.startTime)-new Date(fs.startTime);ktBadge=`<span class="kt-badge">🔥→🍽️ ${fmtDur(kt)}</span>`;}}
+    html+=`<div class="group-header" style="background:${group.color}0A;border-left:3px solid ${group.color}50"><span>${group.icon}</span><span class="group-header-label" style="color:${group.color}">${esc(group.label)}</span>${ktBadge}<span class="group-header-opt">${groupDone}/${group.steps.length} done</span></div>`;
+
+    group.steps.forEach(s=>{
+      const step=tx.steps[s.id];
+      const isMax=step.status==="complete"&&s.id===maxDurId;
+      const elapsedMs=step.status==="active"&&step.startTime?now-new Date(step.startTime):null;
+      const tc=TYPE_COLORS[s.type];
+      const isFireStep=s.type==="fire";
+      let bc,bg;
+      if(step.status==="active"){bc="#F59E0B";bg="#F59E0B0A";}
+      else if(step.status==="complete"){bc=tc;bg=isMax?"#EF444408":tc+"08";}
+      else if(step.status==="skipped"){bc="#374151";bg="#37415106";}
+      else{bc=isFireStep?"#FF6B2B40":tc+"30";bg=isFireStep?"#FF6B2B05":"transparent";}
+
+      const startStr=step.startTime?`<span style="color:#E2E8F0">${fmtTime(new Date(step.startTime))}</span>`:`<span style="color:#2E2E3E">--:--:--</span>`;
+      const endStr=step.endTime?`<span style="color:#E2E8F0">${fmtTime(new Date(step.endTime))}</span>`:step.status==="active"?`<span style="color:#F59E0B;font-weight:700">⏱ live</span>`:`<span style="color:#2E2E3E">--:--:--</span>`;
+      let durStr;
+      if(step.status==="skipped")durStr=`<span style="color:#374151;font-size:10px">Skipped</span>`;
+      else if(step.duration!==null)durStr=`<span style="color:${isMax?"#EF4444":tc}">${fmtDur(step.duration)}</span>`;
+      else if(elapsedMs!==null)durStr=`<span style="color:#F59E0B">${fmtDur(elapsedMs)}</span>`;
+      else durStr=`<span style="color:#2E2E3E">--</span>`;
+
+      let actions="";
+      if(step.status==="pending"){
+        actions=isFireStep?`<button class="abtn abtn-fire" onclick="startStep(${s.id})">🔥 Fire</button>`:`<button class="abtn abtn-start" onclick="startStep(${s.id})">Start</button>`;
+        if(s.optional)actions+=`<button class="abtn abtn-skip" onclick="skipStep(${s.id})">Skip</button>`;
+      }else if(step.status==="active"){actions=`<button class="abtn abtn-end" onclick="endStep(${s.id})">End</button>`;}
+      else if(step.status==="complete"){actions=`<span class="done-check">✓</span><button class="abtn abtn-reset" onclick="resetStep(${s.id})">Reset</button>`;}
+      else if(step.status==="skipped"){actions=`<button class="abtn abtn-reset" onclick="resetStep(${s.id})">Undo</button>`;}
+
+      const obsVal=(step.observation||'').replace(/&/g,"&amp;").replace(/"/g,"&quot;");
+      const nameDisplay=isFireStep?`<span style="color:#FF6B2B">${esc(s.step)}</span>`:esc(s.step);
+      html+=`<div class="step-row" style="border-left-color:${bc};background:${bg}">
+        <div style="font-size:10px;color:${tc}80;font-weight:700">${s.id}</div>
+        <div><div class="step-name">${nameDisplay}${isMax?`<span class="bottleneck-badge">SLOWEST</span>`:""}</div><div class="step-tags"><span class="step-tag" style="background:${tc}20;color:${tc};font-weight:${isFireStep?700:400}">${TYPE_LABELS[s.type]}</span>${s.optional?`<span class="step-tag" style="background:#94A3B820;color:#94A3B8">Optional</span>`:""}</div></div>
+        <div class="step-activity">${esc(s.activity)}</div>
+        <div class="mono">${startStr}</div>
+        <div class="mono">${endStr}</div>
+        <div class="dur-cell">${durStr}</div>
+        <div><input class="obs-input" value="${obsVal}" placeholder="${step.status==="active"?"Observing...":step.status==="complete"?"Add note...":""}" oninput="setObs(${s.id},this.value)" style="opacity:${step.status==="pending"?.3:1}"></div>
+        <div class="action-cell">${actions}</div>
+      </div>`;
+    });
+  });
+
+  html+=`</div></div>
+  <div class="tbl-footer">
+    ${Object.entries(TYPE_LABELS).map(([t,l])=>`<div class="legend-item"><div class="legend-dot" style="background:${TYPE_COLORS[t]}"></div><span class="legend-txt">${l}</span></div>`).join("")}
+    <span class="legend-hint">🔥 Fire = kitchen instruction &nbsp;·&nbsp; Double-click table name to rename &nbsp;·&nbsp; Data auto-saves after 30s idle</span>
+  </div></div></div>`;
+
+  document.getElementById("bodyWrap").innerHTML=html;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TICK
+═══════════════════════════════════════════════════════ */
+setInterval(()=>{
+  const tx=getActiveTx();
+  const hasActive=tx&&STEPS.some(s=>tx.steps[s.id].status==="active");
+  if(hasActive||showSummary)render();
+  else document.getElementById("clock").textContent=fmtTime(new Date());
+},1000);
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+const t1=mkTable("Table 1");
+tables.push(t1);
+activeTableId=t1.id;
+sessionId=genSessionId();
+document.getElementById('sessionLabel').value=`Medusa ${new Date().toLocaleDateString('en-PH',{day:'2-digit',month:'short',year:'numeric'})}`;
+render();
+</script>
+</body>
+</html>

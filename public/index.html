@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Time in Motion · Fine Dining · Medusa by Palace</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -130,6 +131,32 @@ button{cursor:pointer;}
 .toast.show{opacity:1;}
 .toast.ok{border-color:#10B981;color:#10B981;}
 .toast.err{border-color:#EF4444;color:#EF4444;}
+
+/* ── RESPONSIVE / MOBILE ── */
+@media (max-width:640px){
+  .header{flex-wrap:wrap;gap:8px;padding:10px 12px;}
+  .logo-sub{display:none;}
+  .hdr-btns{width:100%;justify-content:flex-start;flex-wrap:wrap;gap:6px;}
+  .clock{font-size:12px;padding:3px 8px;}
+  .btn-sm{padding:5px 9px;font-size:10px;}
+
+  .session-bar{padding:8px 12px;flex-direction:column;align-items:stretch;gap:8px;}
+  .session-label-wrap{width:100%;min-width:0;}
+  .session-input{width:100%;}
+  .session-bar .btn-sm{width:100%;text-align:center;}
+
+  .table-tabs{padding:0 12px;}
+
+  .summary-panel{padding:10px 12px;}
+  .summary-card{flex:1 1 45%;min-width:0;}
+
+  .body-wrap{padding:10px 12px;}
+  .tx-selector{gap:6px;}
+  .prog-bar{padding:8px 10px;gap:12px;}
+  .progress-track{flex-basis:100%;}
+
+  .modal{width:92vw;padding:16px;}
+}
 </style>
 </head>
 <body>

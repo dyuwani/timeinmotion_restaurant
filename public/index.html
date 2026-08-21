@@ -400,7 +400,7 @@ async function saveSession(silent=false){
       body:JSON.stringify({sessionId,label,tables,useCase:activeUseCase,venue:activeVenue}),
     });
     const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Save failed');
+    if(!res.ok){console.error('[save] /api/save failed:',data);throw new Error(data.detail||data.error||'Save failed');}
     setSaveStatus('saved','✓ Saved '+(new Date().toLocaleTimeString('en-PH',{hour12:false})));
     if(!silent)toast('Session saved ✓','ok');
   }catch(err){
@@ -416,7 +416,7 @@ async function showLoadModal(){
   try{
     const res=await fetch('/api/sessions');
     const data=await res.json();
-    if(!res.ok)throw new Error(data.error);
+    if(!res.ok){console.error('[sessions] /api/sessions failed:',data);throw new Error(data.detail||data.error||'Failed to load sessions');}
     const sessions=data.sessions||[];
     if(!sessions.length){list.innerHTML='<div class="modal-empty">No saved sessions yet.<br>Save a session to see it here.</div>';return;}
     list.innerHTML=sessions.map(s=>`
@@ -438,7 +438,7 @@ async function loadSession(id){
   try{
     const res=await fetch(`/api/load?id=${encodeURIComponent(id)}`);
     const data=await res.json();
-    if(!res.ok)throw new Error(data.error);
+    if(!res.ok){console.error('[load] /api/load failed:',data);throw new Error(data.detail||data.error||'Failed to load session');}
     const s=data.session;
     // Apply the use case/venue this session was saved under BEFORE assigning
     // tables — the step IDs only make sense against the matching STEP_GROUPS.

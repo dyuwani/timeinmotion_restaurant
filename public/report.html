@@ -361,7 +361,10 @@ async function loadReport(){
   try{
     const res=await fetch('/api/report');
     const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Failed to load report');
+    if(!res.ok){
+      console.error('[report] /api/report failed:',data);
+      throw new Error(data.detail||data.error||'Failed to load report');
+    }
     allSessions=data.sessions||[];
     renderReport();
   }catch(err){

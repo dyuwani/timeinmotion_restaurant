@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
     const supabase = getSupabase();
     const { data, error } = await supabase
       .from('sessions')
-      .select('id, label, saved_at, tables')
+      .select('id, label, saved_at, tables, use_case, venue')
       .eq('id', id)
       .maybeSingle();
 
@@ -26,6 +26,8 @@ module.exports = async function handler(req, res) {
       label: data.label,
       savedAt: data.saved_at,
       tables: data.tables,
+      useCase: data.use_case,
+      venue: data.venue,
     };
     return res.status(200).json({ success: true, session });
   } catch (err) {

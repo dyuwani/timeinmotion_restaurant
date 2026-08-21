@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { sessionId, label, tables } = req.body || {};
+    const { sessionId, label, tables, useCase, venue } = req.body || {};
 
     if (!sessionId || !Array.isArray(tables))
       return res.status(400).json({ error: 'sessionId and tables[] are required' });
@@ -23,6 +23,8 @@ module.exports = async function handler(req, res) {
       tables,
       table_count: tables.length,
       tx_count: txCount,
+      use_case: useCase || 'finedining',
+      venue: venue || null,
     });
 
     if (error) throw error;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Time in Motion · Fine Dining · Medusa by Palace</title>
+<title id="pageTitle">Time in Motion · Palace Venues</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0A0A0F;color:#E2E8F0;font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:13px;}
@@ -25,6 +25,14 @@ button{cursor:pointer;}
 .btn-sm.active{border-color:#FF6B2B;color:#FF6B2B;background:#FF6B2B10;}
 .btn-sm.purple{border-color:#6E56F8;color:#6E56F8;background:#6E56F810;}
 .btn-sm.green{border-color:#10B981;color:#10B981;background:#10B98110;}
+
+/* ── USE CASE / VENUE BAR ── */
+.usecase-bar{background:#0A0A14;border-bottom:1px solid #1E1E2E;padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.uc-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.uc-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;}
+.uc-pill{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid #1E1E2E;background:transparent;color:#64748B;}
+.uc-pill.sel{font-weight:700;border-color:#6E56F8;background:#6E56F815;color:#6E56F8;}
+.uc-sep{width:1px;height:16px;background:#1E1E2E;margin:0 2px;}
 
 /* ── SESSION BAR ── */
 .session-bar{background:#080810;border-bottom:1px solid #1A1A2E;padding:7px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -140,6 +148,9 @@ button{cursor:pointer;}
   .clock{font-size:12px;padding:3px 8px;}
   .btn-sm{padding:5px 9px;font-size:10px;}
 
+  .usecase-bar{padding:8px 12px;}
+  .uc-sep{display:none;}
+
   .session-bar{padding:8px 12px;flex-direction:column;align-items:stretch;gap:8px;}
   .session-label-wrap{width:100%;min-width:0;}
   .session-input{width:100%;}
@@ -200,8 +211,8 @@ button{cursor:pointer;}
   <div class="logo-bar">
     <div class="logo-stripe"></div>
     <div>
-      <div class="logo-title">Time in Motion &nbsp;·&nbsp; Fine Dining</div>
-      <div class="logo-sub">Medusa by Palace &nbsp;·&nbsp; POS/ECR Service Flow &nbsp;·&nbsp; Modulus Labs</div>
+      <div class="logo-title" id="logoTitle">Time in Motion &nbsp;·&nbsp; Fine Dining</div>
+      <div class="logo-sub" id="logoSub">Medusa by Palace &nbsp;·&nbsp; POS/ECR Service Flow &nbsp;·&nbsp; Modulus Labs</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -210,6 +221,9 @@ button{cursor:pointer;}
     <button class="btn-sm" onclick="exportCSV()">↓ CSV</button>
   </div>
 </div>
+
+<!-- USE CASE / VENUE -->
+<div class="usecase-bar" id="usecaseBar"></div>
 
 <!-- SESSION BAR -->
 <div class="session-bar">
@@ -257,7 +271,7 @@ const TYPE_COLORS = { setup:"#6E56F8",order:"#3B82F6",fire:"#FF6B2B",serve:"#10B
 const TYPE_LABELS = { setup:"Setup",order:"Order",fire:"🔥 Fire",serve:"🍽️ Serve",clear:"↩ Clear",payment:"Payment",close:"Close" };
 const PHASE_LABELS = { setup:"Open",order:"Order",service:"Service",payment:"Payment",close:"Close" };
 
-const STEP_GROUPS = [
+const FINEDINING_GROUPS = [
   { id:"setup",label:"Table Setup",icon:"🪑",color:"#6E56F8",steps:[
     {id:1,step:"Guest Seated",activity:"Table Opened / Cover Set",type:"setup",optional:false},
     {id:2,step:"Menus Presented",activity:"Menu Handover",type:"setup",optional:false},
@@ -310,12 +324,63 @@ const STEP_GROUPS = [
     {id:31,step:"Table Closed",activity:"Settlement / Turnover",type:"close",optional:false},
   ]},
 ];
-const STEPS = STEP_GROUPS.flatMap(g=>g.steps.map(s=>({...s,group:g.id,groupLabel:g.label,groupColor:g.color,groupIcon:g.icon})));
-const FIRE_SERVE_PAIRS=[
+const FINEDINING_FIRE_SERVE_PAIRS=[
   {label:"Amuse-Bouche",fireId:9,serveId:10},{label:"Bread",fireId:11,serveId:12},
   {label:"Starter",fireId:13,serveId:14},{label:"Main Course",fireId:17,serveId:18},
   {label:"Cheese",fireId:20,serveId:21},{label:"Dessert",fireId:23,serveId:24},
 ];
+
+const CLUBS_GROUPS = [
+  { id:"arrival",label:"Arrival & Seating",icon:"🚪",color:"#6E56F8",steps:[
+    {id:1,step:"Group Arrival",activity:"Guest List Check-in",type:"setup",optional:false},
+    {id:2,step:"Host Greeting",activity:"VIP Host Assigned",type:"setup",optional:true},
+    {id:3,step:"Table/Booth Assigned",activity:"Table Allocation",type:"setup",optional:false},
+  ]},
+  { id:"order",label:"Order Phase",icon:"📋",color:"#3B82F6",steps:[
+    {id:4,step:"Order Taken",activity:"Bottle/Drinks Order Encoded",type:"order",optional:false},
+    {id:5,step:"Order Submitted",activity:"ECR → POS",type:"order",optional:false},
+    {id:6,step:"Order Acknowledged",activity:"Bar / Stock Confirmed",type:"order",optional:false},
+  ]},
+  { id:"bottle",label:"Bottle Service",icon:"🍾",color:"#FF6B2B",steps:[
+    {id:7,step:"FIRE: Bottle Prep",activity:"Bar Instruction",type:"fire",optional:false,fireId:"bottle"},
+    {id:8,step:"Bottle Service Delivered",activity:"Sparkler Presentation / Delivered to Table",type:"serve",optional:false,serveId:"bottle"},
+    {id:9,step:"Mixers & Garnish Set",activity:"Mixers / Ice / Garnish Arranged",type:"serve",optional:true},
+  ]},
+  { id:"reorder",label:"Additional Round",icon:"🔄",color:"#A78BFA",steps:[
+    {id:10,step:"FIRE: Reorder",activity:"Bar Instruction",type:"fire",optional:true,fireId:"reorder"},
+    {id:11,step:"Reorder Served",activity:"Round Delivered",type:"serve",optional:true,serveId:"reorder"},
+  ]},
+  { id:"payment",label:"Settlement",icon:"💳",color:"#F59E0B",steps:[
+    {id:12,step:"Bill Requested",activity:"Generate Bill",type:"payment",optional:false},
+    {id:13,step:"Bill Presented",activity:"Bill to Table",type:"payment",optional:false},
+    {id:14,step:"Payment Initiated",activity:"Payment Processing",type:"payment",optional:false},
+    {id:15,step:"Payment Completed",activity:"Approved / Declined",type:"payment",optional:false},
+    {id:16,step:"Receipt Issued",activity:"Print / Digital Receipt",type:"payment",optional:false},
+    {id:17,step:"Table Closed",activity:"Settlement / Turnover",type:"close",optional:false},
+  ]},
+];
+const CLUBS_FIRE_SERVE_PAIRS=[
+  {label:"Bottle Service",fireId:7,serveId:8},{label:"Reorder Round",fireId:10,serveId:11},
+];
+
+const USE_CASES = {
+  finedining:{
+    key:"finedining",label:"Fine Dining",icon:"🍽️",subtitle:"POS/ECR Service Flow",
+    venues:["Medusa by Palace"],groups:FINEDINING_GROUPS,firePairs:FINEDINING_FIRE_SERVE_PAIRS,
+    unitLabel:"Table",txLabel:"+ New Seating",fireBtnLabel:"🔥 Kitchen Times",fireSectionLabel:"🔥 Fire-to-Serve · Kitchen Execution Times",durationLabel:"Total Dining Duration",startLabel:"Seated At",
+  },
+  clubs:{
+    key:"clubs",label:"Clubs",icon:"🥂",subtitle:"VIP Table / Bottle Service Flow",
+    venues:["Revel","Yes Please","The Clubhouse"],groups:CLUBS_GROUPS,firePairs:CLUBS_FIRE_SERVE_PAIRS,
+    unitLabel:"Table",txLabel:"+ New Group",fireBtnLabel:"🍾 Bar Times",fireSectionLabel:"🍾 Fire-to-Serve · Bar Execution Times",durationLabel:"Total Visit Duration",startLabel:"Arrived At",
+  },
+};
+function buildSteps(groups){return groups.flatMap(g=>g.steps.map(s=>({...s,group:g.id,groupLabel:g.label,groupColor:g.color,groupIcon:g.icon})));}
+let activeUseCase="finedining";
+let activeVenue=USE_CASES[activeUseCase].venues[0];
+let STEP_GROUPS=USE_CASES[activeUseCase].groups;
+let STEPS=buildSteps(STEP_GROUPS);
+let FIRE_SERVE_PAIRS=USE_CASES[activeUseCase].firePairs;
 
 /* ═══════════════════════════════════════════════════════
    STATE
@@ -323,9 +388,10 @@ const FIRE_SERVE_PAIRS=[
 let tables=[],activeTableId=null,txCounter=100,tableCounter=10,showSummary=false;
 let sessionId=genSessionId(),autoSaveTimer=null;
 
+function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
 function genSessionId(){
   const d=new Date();
-  return `medusa-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Date.now().toString(36)}`;
+  return `${slug(activeVenue)}-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Date.now().toString(36)}`;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -336,7 +402,8 @@ function fmtDur(ms){if(ms===null||ms===undefined||ms<0)return"--";const s=Math.f
 function esc(str){return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function mkStep(){return{startTime:null,endTime:null,duration:null,observation:"",status:"pending"};}
 function mkTx(label){const steps={};STEPS.forEach(s=>{steps[s.id]=mkStep();});return{id:++txCounter,label:label||"Tx 1",steps,createdAt:new Date().toISOString()};}
-function mkTable(label){const tx=mkTx("Tx 1");return{id:++tableCounter,label:label||"Table 1",transactions:[tx],activeTxId:tx.id};}
+function defaultUnitLabel(n){return `${USE_CASES[activeUseCase].unitLabel} ${n}`;}
+function mkTable(label){const tx=mkTx("Tx 1");return{id:++tableCounter,label:label||defaultUnitLabel(1),transactions:[tx],activeTxId:tx.id};}
 function getActiveTable(){return tables.find(t=>t.id===activeTableId);}
 function getActiveTx(){const t=getActiveTable();return t?t.transactions.find(tx=>tx.id===t.activeTxId):null;}
 function getDone(tx){return STEPS.filter(s=>tx.steps[s.id].status==="complete").length;}
@@ -369,14 +436,55 @@ function endStep(sid){
 function skipStep(sid){const tx=getActiveTx();if(!tx)return;tx.steps[sid]={...tx.steps[sid],startTime:null,endTime:null,duration:null,status:"skipped"};markUnsaved();render();}
 function resetStep(sid){const tx=getActiveTx();if(!tx)return;tx.steps[sid]=mkStep();markUnsaved();render();}
 function setObs(sid,v){const tx=getActiveTx();if(tx){tx.steps[sid].observation=v;scheduleAutoSave();}}
-function addTable(){const n=tables.length+1;const t=mkTable("Table "+n);tables.push(t);activeTableId=t.id;markUnsaved();render();}
+function addTable(){const n=tables.length+1;const t=mkTable(defaultUnitLabel(n));tables.push(t);activeTableId=t.id;markUnsaved();render();}
 function removeTable(id){if(tables.length===1)return;tables=tables.filter(t=>t.id!==id);if(activeTableId===id)activeTableId=tables[0].id;markUnsaved();render();}
 function setActiveTable(id){activeTableId=id;render();}
 function addTx(){const table=getActiveTable();if(!table)return;const n=table.transactions.length+1;const tx=mkTx("Tx "+n);table.transactions.push(tx);table.activeTxId=tx.id;markUnsaved();render();}
 function setActiveTx(txId){const t=getActiveTable();if(t){t.activeTxId=txId;render();}}
 function toggleSummary(){showSummary=!showSummary;render();}
 function startRenameTable(id){const t=tables.find(t=>t.id===id);const label=prompt("Rename table:",t?t.label:"");if(label!==null&&label.trim()){if(t)t.label=label.trim();markUnsaved();render();}}
-function newSession(){if(!confirm("Start a fresh session? Current unsaved data will be lost."))return;tables=[];txCounter=100;tableCounter=10;sessionId=genSessionId();document.getElementById('sessionLabel').value='';setSaveStatus('unsaved','● Unsaved');const t1=mkTable("Table 1");tables.push(t1);activeTableId=t1.id;render();}
+
+function defaultSessionLabel(){return `${activeVenue} ${new Date().toLocaleDateString('en-PH',{day:'2-digit',month:'short',year:'numeric'})}`;}
+function resetTables(){tables=[];txCounter=100;tableCounter=10;sessionId=genSessionId();const t1=mkTable(defaultUnitLabel(1));tables.push(t1);activeTableId=t1.id;}
+function newSession(){
+  if(!confirm("Start a fresh session? Current unsaved data will be lost."))return;
+  resetTables();
+  document.getElementById('sessionLabel').value=defaultSessionLabel();
+  setSaveStatus('','● Unsaved');
+  render();
+}
+
+function applyBranding(){
+  const uc=USE_CASES[activeUseCase];
+  document.getElementById('logoTitle').innerHTML=`Time in Motion &nbsp;·&nbsp; ${esc(uc.label)}`;
+  document.getElementById('logoSub').innerHTML=`${esc(activeVenue)} &nbsp;·&nbsp; ${esc(uc.subtitle)} &nbsp;·&nbsp; Modulus Labs`;
+  document.title=`Time in Motion · ${uc.label} · ${activeVenue}`;
+  document.getElementById('summaryBtn').textContent=uc.fireBtnLabel;
+  document.getElementById('sessionLabel').placeholder=`e.g. ${activeVenue} ${new Date().toLocaleDateString('en-PH',{day:'2-digit',month:'short'})} — First ${activeUseCase==="clubs"?"Group":"Seating"}`;
+}
+
+// Switch use case and/or venue. Steps differ per use case, so existing tx data
+// can't carry over — behaves like "New Session" for the new context.
+function switchContext(key,venue,opts={}){
+  if(!opts.skipConfirm){
+    const hasProgress=tables.some(t=>t.transactions.some(tx=>Object.values(tx.steps).some(s=>s.status!=="pending")));
+    if(hasProgress&&!confirm("Switching will start a fresh session and clear unsaved observations. Continue?"))return false;
+  }
+  activeUseCase=key;
+  const uc=USE_CASES[key];
+  activeVenue=venue||uc.venues[0];
+  STEP_GROUPS=uc.groups;
+  STEPS=buildSteps(STEP_GROUPS);
+  FIRE_SERVE_PAIRS=uc.firePairs;
+  resetTables();
+  applyBranding();
+  document.getElementById('sessionLabel').value=defaultSessionLabel();
+  setSaveStatus('','● Unsaved');
+  render();
+  return true;
+}
+function selectUseCase(key){if(key===activeUseCase)return;switchContext(key,USE_CASES[key].venues[0]);}
+function selectVenue(v){if(v===activeVenue)return;switchContext(activeUseCase,v);}
 
 /* ═══════════════════════════════════════════════════════
    SAVE / LOAD
@@ -398,12 +506,12 @@ function scheduleAutoSave(){
 
 async function saveSession(silent=false){
   setSaveStatus('saving','◌ Saving…');
-  const label=getSaveLabel()||`Medusa ${new Date().toLocaleDateString('en-PH')}`;
+  const label=getSaveLabel()||defaultSessionLabel();
   try{
     const res=await fetch('/api/save',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId,label,tables}),
+      body:JSON.stringify({sessionId,label,tables,useCase:activeUseCase,venue:activeVenue}),
     });
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||'Save failed');
@@ -428,7 +536,7 @@ async function showLoadModal(){
     list.innerHTML=sessions.map(s=>`
       <div class="session-item" onclick="loadSession('${esc(s.id)}')">
         <div style="flex:1">
-          <div class="si-label">${esc(s.label)}</div>
+          <div class="si-label">${esc(s.label)} <span class="si-badge" style="margin-left:4px">${esc(USE_CASES[s.useCase]?.icon||"🍽️")} ${esc(s.venue||USE_CASES[s.useCase]?.label||"Fine Dining")}</span></div>
           <div class="si-meta">${esc(s.id)} &nbsp;·&nbsp; ${s.tableCount} table${s.tableCount!==1?'s':''} &nbsp;·&nbsp; ${s.txCount||0} tx</div>
           <div class="si-meta">${new Date(s.savedAt).toLocaleString('en-PH')}</div>
         </div>
@@ -446,6 +554,15 @@ async function loadSession(id){
     const data=await res.json();
     if(!res.ok)throw new Error(data.error);
     const s=data.session;
+    // Apply the use case/venue this session was saved under BEFORE assigning
+    // tables — the step IDs only make sense against the matching STEP_GROUPS.
+    const key=USE_CASES[s.useCase]?s.useCase:'finedining';
+    activeUseCase=key;
+    activeVenue=s.venue||USE_CASES[key].venues[0];
+    STEP_GROUPS=USE_CASES[key].groups;
+    STEPS=buildSteps(STEP_GROUPS);
+    FIRE_SERVE_PAIRS=USE_CASES[key].firePairs;
+    applyBranding();
     tables=s.tables;
     sessionId=s.id;
     document.getElementById('sessionLabel').value=s.label||'';
@@ -472,14 +589,15 @@ function toast(msg,type='ok'){
    EXPORT
 ═══════════════════════════════════════════════════════ */
 function exportCSV(){
-  const hdr=["Table","Transaction","Group","Step #","Step","Type","POS/ECR Activity","Optional","Start Time","End Time","Duration (s)","Observation","Status"];
+  const hdr=["Use Case","Venue","Table","Transaction","Group","Step #","Step","Type","POS/ECR Activity","Optional","Start Time","End Time","Duration (s)","Observation","Status"];
   const rows=[hdr.join(",")];
+  const ucLabel=USE_CASES[activeUseCase].label;
   tables.forEach(table=>{
     table.transactions.forEach(tx=>{
       STEPS.forEach(s=>{
         const step=tx.steps[s.id];
         rows.push([
-          '"'+table.label+'"','"'+tx.label+'"','"'+s.groupLabel+'"',s.id,'"'+s.step+'"',s.type,
+          '"'+ucLabel+'"','"'+activeVenue+'"','"'+table.label+'"','"'+tx.label+'"','"'+s.groupLabel+'"',s.id,'"'+s.step+'"',s.type,
           '"'+s.activity+'"',s.optional?"Y":"N",
           step.startTime?fmtTime(new Date(step.startTime)):"",
           step.endTime?fmtTime(new Date(step.endTime)):"",
@@ -491,15 +609,30 @@ function exportCSV(){
   });
   const blob=new Blob([rows.join("\n")],{type:"text/csv"});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");a.href=url;a.download="tim-fine-dining.csv";a.click();URL.revokeObjectURL(url);
+  const a=document.createElement("a");a.href=url;a.download=`tim-${slug(activeUseCase)}-${slug(activeVenue)}.csv`;a.click();URL.revokeObjectURL(url);
 }
 
 /* ═══════════════════════════════════════════════════════
    RENDER
 ═══════════════════════════════════════════════════════ */
+function renderUseCaseBar(){
+  const uc=USE_CASES[activeUseCase];
+  let html=`<div class="uc-group"><span class="uc-label">Use Case</span>`;
+  Object.values(USE_CASES).forEach(u=>{
+    html+=`<button class="uc-pill${u.key===activeUseCase?" sel":""}" onclick="selectUseCase('${u.key}')">${u.icon} ${esc(u.label)}</button>`;
+  });
+  html+=`</div><div class="uc-sep"></div><div class="uc-group"><span class="uc-label">Venue</span>`;
+  uc.venues.forEach(v=>{
+    html+=`<button class="uc-pill${v===activeVenue?" sel":""}" onclick="selectVenue('${esc(v).replace(/'/g,"\\'")}')">${esc(v)}</button>`;
+  });
+  html+=`</div>`;
+  document.getElementById("usecaseBar").innerHTML=html;
+}
+
 function render(){
   const now=new Date();
   document.getElementById("clock").textContent=fmtTime(now);
+  renderUseCaseBar();
 
   // ── TABLE TABS ──
   let tabsHTML="";
@@ -530,13 +663,14 @@ function render(){
     const done=getDone(tx);
     let sc=`<div class="sec-label">Service Summary · ${esc(table?.label||"")} · Current Transaction</div>
     <div class="summary-grid">
-      <div class="summary-card" style="border:1px solid #6E56F830"><div class="sc-label" style="color:#6E56F8">Total Dining Time</div><div class="sc-value">${totalDur!==null?fmtDur(totalDur):"—"}</div></div>
+      <div class="summary-card" style="border:1px solid #6E56F830"><div class="sc-label" style="color:#6E56F8">${USE_CASES[activeUseCase].durationLabel}</div><div class="sc-value">${totalDur!==null?fmtDur(totalDur):"—"}</div></div>
       <div class="summary-card" style="border:1px solid #10B98130"><div class="sc-label" style="color:#10B981">Steps Complete</div><div class="sc-value">${done} / ${STEPS.length}</div></div>`;
-    const p28=tx.steps[28],p29=tx.steps[29];
+    const payInitStep=STEPS.find(s=>s.step==="Payment Initiated"),payDoneStep=STEPS.find(s=>s.step==="Payment Completed");
+    const p28=payInitStep?tx.steps[payInitStep.id]:null,p29=payDoneStep?tx.steps[payDoneStep.id]:null;
     const payTime=(p28&&p29&&p28.startTime&&p29.startTime)?new Date(p29.startTime)-new Date(p28.startTime):null;
     sc+=`<div class="summary-card" style="border:1px solid #F59E0B30"><div class="sc-label" style="color:#F59E0B">Payment Processing</div><div class="sc-value">${payTime!==null?fmtDur(payTime):"—"}</div></div></div>`;
     if(kts.length){
-      sc+=`<div class="kitchen-section"><div class="sec-label" style="margin-top:12px">🔥 Fire-to-Serve · Kitchen Execution Times</div>`;
+      sc+=`<div class="kitchen-section"><div class="sec-label" style="margin-top:12px">${USE_CASES[activeUseCase].fireSectionLabel}</div>`;
       kts.forEach(p=>{const isMax=p.kt===maxKt&&p.kt>0;sc+=`<div class="kitchen-row"><div class="kitchen-label">${esc(p.label)}</div><div class="kitchen-time" style="color:${isMax?"#EF4444":"#FF6B2B"}">${p.kt!==null?fmtDur(p.kt):"⏳ active"}</div><div class="kitchen-detail">Fired: ${p.fired?fmtTime(new Date(p.fired)):"—"} → Served: ${p.served?fmtTime(new Date(p.served)):"—"}${isMax?' <span style="color:#EF4444;font-size:9px;font-weight:700">◀ SLOWEST</span>':""}</div></div>`;});
       sc+=`</div>`;
     }
@@ -555,12 +689,12 @@ function render(){
     const d=getDone(t);
     html+=`<button class="tx-tab${t.id===table.activeTxId?" sel":""}" onclick="setActiveTx(${t.id})">Tx ${i+1}${d>0?` <small style="opacity:.65;font-size:9px">(${d}/${STEPS.length})</small>`:""}</button>`;
   });
-  html+=`<button class="tx-new" onclick="addTx()">+ New Seating</button></div>
+  html+=`<button class="tx-new" onclick="addTx()">${esc(USE_CASES[activeUseCase].txLabel)}</button></div>
   <div class="prog-bar">
-    <div class="prog-item"><div class="prog-item-label">Total Dining Duration</div><div class="prog-item-val" style="color:#6E56F8">${totalDur!==null?fmtDur(totalDur):"--"}</div></div>
+    <div class="prog-item"><div class="prog-item-label">${USE_CASES[activeUseCase].durationLabel}</div><div class="prog-item-val" style="color:#6E56F8">${totalDur!==null?fmtDur(totalDur):"--"}</div></div>
     <div class="prog-item"><div class="prog-item-label">Steps Done</div><div class="prog-item-val" style="color:#10B981">${done} / ${STEPS.length}</div></div>
     <div class="prog-item"><div class="prog-item-label">Active</div><div class="prog-item-val" style="color:#F59E0B">${activeCt}</div></div>
-    <div class="prog-item"><div class="prog-item-label">Seated At</div><div class="prog-item-val" style="color:#94A3B8;font-size:13px">${fmtTime(new Date(tx.createdAt))}</div></div>
+    <div class="prog-item"><div class="prog-item-label">${USE_CASES[activeUseCase].startLabel}</div><div class="prog-item-val" style="color:#94A3B8;font-size:13px">${fmtTime(new Date(tx.createdAt))}</div></div>
     <div class="progress-track"><div class="prog-item-label">Progress</div><div class="progress-bg"><div class="progress-fill" style="background:linear-gradient(90deg,#6E56F8,#FF6B2B,#10B981);width:${(done/STEPS.length)*100}%"></div></div></div>
   </div>
   <div class="steps-table"><div class="tbl-outer"><div class="min-w">
@@ -638,11 +772,12 @@ setInterval(()=>{
 /* ═══════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════ */
-const t1=mkTable("Table 1");
+const t1=mkTable(defaultUnitLabel(1));
 tables.push(t1);
 activeTableId=t1.id;
 sessionId=genSessionId();
-document.getElementById('sessionLabel').value=`Medusa ${new Date().toLocaleDateString('en-PH',{day:'2-digit',month:'short',year:'numeric'})}`;
+applyBranding();
+document.getElementById('sessionLabel').value=defaultSessionLabel();
 render();
 </script>
 </body>

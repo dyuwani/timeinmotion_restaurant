@@ -7,8 +7,14 @@ create table if not exists sessions (
   saved_at    timestamptz not null default now(),
   tables      jsonb not null,
   table_count int not null default 0,
-  tx_count    int not null default 0
+  tx_count    int not null default 0,
+  use_case    text not null default 'finedining',
+  venue       text
 );
+
+-- Safe to re-run on a table that already existed before use_case/venue existed.
+alter table sessions add column if not exists use_case text not null default 'finedining';
+alter table sessions add column if not exists venue text;
 
 create index if not exists sessions_saved_at_idx on sessions (saved_at desc);
 

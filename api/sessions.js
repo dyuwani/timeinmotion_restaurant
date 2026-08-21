@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
     const supabase = getSupabase();
     const { data, error } = await supabase
       .from('sessions')
-      .select('id, label, saved_at, table_count, tx_count')
+      .select('id, label, saved_at, table_count, tx_count, use_case, venue')
       .order('saved_at', { ascending: false })
       .limit(MAX_SESSIONS);
 
@@ -23,6 +23,8 @@ module.exports = async function handler(req, res) {
       savedAt: s.saved_at,
       tableCount: s.table_count,
       txCount: s.tx_count,
+      useCase: s.use_case,
+      venue: s.venue,
     }));
 
     return res.status(200).json({ success: true, sessions });

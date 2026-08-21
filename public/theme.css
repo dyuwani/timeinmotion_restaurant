@@ -1,0 +1,91 @@
+/* ═══════════════════════════════════════════════════════
+   THEME TOKENS — shared by index.html and report.html.
+   Dark is the default (unscoped :root); [data-theme="light"]
+   overrides. theme.js sets data-theme on <html> before paint.
+   Accent/status hues differ slightly per theme so they stay
+   readable against a light surface (validated with the dataviz
+   skill's palette checker) — see VENUE/TYPE colors below.
+═══════════════════════════════════════════════════════ */
+:root{
+  /* surfaces */
+  --bg-0:#0A0A0F;      /* page background */
+  --bg-1:#0F0F1A;      /* header / summary-panel / section */
+  --bg-2:#0A0A14;      /* session-bar / tabs / table header+footer */
+  --bg-3:#12121A;      /* cards: summary-card, steps-table, modal, stat-tile */
+  --border:#1E1E2E;
+  --border-soft:#1A1A28;
+
+  /* text */
+  --text-1:#E2E8F0;    /* primary */
+  --text-2:#94A3B8;    /* secondary / mono values */
+  --text-3:#64748B;    /* muted labels */
+  --text-4:#374151;    /* dim/faint hints, skip text */
+  --text-5:#2E2E3E;    /* near-invisible placeholders, disabled figures */
+
+  /* status/type colors (dark defaults — unchanged from the original palette) */
+  --c-setup:#6E56F8;
+  --c-order:#3B82F6;
+  --c-fire:#FF6B2B;
+  --c-serve:#10B981;
+  --c-payment:#F59E0B;
+  --c-close:#EF4444;
+  --c-violet:#A78BFA;
+  --c-bread:#C4A052;
+  --c-cheese:#D4A843;
+  --c-finedining:#6E56F8;
+  --c-clubs:#DB5B1F;
+  --c-venue-1:#DB5B1F;  /* Revel */
+  --c-venue-2:#8B6EF0;  /* Yes Please */
+  --c-venue-3:#B8863A;  /* The Clubhouse */
+
+  /* generic brand accent (clock, links, selected pills/tabs) — same hue as
+     --c-setup today but kept as its own token since it's a UI-chrome
+     accent, not a step-type color; they're free to diverge later. */
+  --accent:#6E56F8;
+
+  /* .abtn-end (payment/"End" button) is solid-filled, so its ink color has
+     to flip with the fill's brightness: dark theme's payment amber is
+     bright (black ink reads best), light theme's is a deep amber-brown
+     (white ink reads best). */
+  --payment-ink:#000000;
+}
+
+:root[data-theme="light"]{
+  --bg-0:#F1F5F9;
+  --bg-1:#FFFFFF;
+  --bg-2:#F8FAFC;
+  --bg-3:#FFFFFF;
+  --border:#E2E8F0;
+  --border-soft:#EDF1F5;
+
+  --text-1:#0F172A;
+  --text-2:#475569;
+  --text-3:#64748B;
+  --text-4:#94A3B8;
+  --text-5:#E2E8F0;
+
+  /* Darkened for ≥3:1 contrast on a light surface — validated with
+     scripts/validate_palette.js --mode light (dataviz skill). */
+  --c-setup:#5B3FE0;
+  --c-order:#2563EB;
+  --c-fire:#C2410C;
+  --c-serve:#047857;
+  --c-payment:#A16207;
+  --c-close:#DC2626;
+  --c-violet:#7C3AED;
+  --c-bread:#92661B;
+  --c-cheese:#A67C00;
+  --c-finedining:#5B3FE0;
+  --c-clubs:#C2410C;
+  --c-venue-1:#C2410C;
+  --c-venue-2:#7C3AED;
+  --c-venue-3:#92661B;
+
+  --accent:#5B3FE0;
+  --payment-ink:#FFFFFF;
+}
+
+body{background:var(--bg-0);color:var(--text-1);}
+
+/* ── Theme toggle button (used in both pages' headers) ── */
+.theme-toggle{padding:5px 10px;border-radius:6px;font-size:13px;border:1px solid var(--border);background:var(--bg-2);color:var(--text-1);line-height:1;}

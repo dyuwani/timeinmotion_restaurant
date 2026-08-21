@@ -4,82 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Time in Motion · Reports</title>
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0A0A0F;color:#E2E8F0;font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:13px;}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:13px;}
 input,button,select{font-family:inherit;}
 button{cursor:pointer;}
 a{color:inherit;}
 ::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:#0A0A14;}
-::-webkit-scrollbar-thumb{background:#2E2E3E;border-radius:4px;}
+::-webkit-scrollbar-track{background:var(--bg-2);}
+::-webkit-scrollbar-thumb{background:var(--text-5);border-radius:4px;}
 
 /* ── HEADER ── */
-.header{background:#0F0F1A;border-bottom:1px solid #1E1E2E;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.header{background:var(--bg-1);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .logo-bar{display:flex;align-items:center;gap:10px;}
 .logo-stripe{width:5px;height:32px;border-radius:3px;background:linear-gradient(180deg,#6E56F8,#FF6B2B);flex-shrink:0;}
-.logo-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
-.logo-sub{font-size:10px;color:#64748B;margin-top:1px;}
+.logo-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-1);}
+.logo-sub{font-size:10px;color:var(--text-3);margin-top:1px;}
 .hdr-btns{display:flex;gap:8px;align-items:center;}
-.btn-sm{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid #2E2E3E;background:#1E1E2E;color:#E2E8F0;text-decoration:none;display:inline-block;}
-.btn-sm.sel{border-color:#6E56F8;color:#6E56F8;background:#6E56F810;}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid var(--text-5);background:var(--border);color:var(--text-1);text-decoration:none;display:inline-block;}
+.btn-sm.sel{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb, var(--accent) 10%, transparent);}
 
 /* ── FILTER BAR ── */
-.filter-bar{background:#0A0A14;border-bottom:1px solid #1E1E2E;padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.filter-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .f-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.f-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;}
-.f-pill{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid #1E1E2E;background:transparent;color:#64748B;}
-.f-pill.sel{font-weight:700;border-color:#6E56F8;background:#6E56F815;color:#6E56F8;}
-.f-search{background:#12121A;border:1px solid #1E1E2E;color:#E2E8F0;border-radius:4px;padding:5px 10px;font-size:12px;outline:none;width:220px;margin-left:auto;}
-.f-search:focus{border-color:#6E56F860;}
+.f-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;}
+.f-pill{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:transparent;color:var(--text-3);}
+.f-pill.sel{font-weight:700;border-color:var(--accent);background:color-mix(in srgb, var(--accent) 8%, transparent);color:var(--accent);}
+.f-search{background:var(--bg-3);border:1px solid var(--border);color:var(--text-1);border-radius:4px;padding:5px 10px;font-size:12px;outline:none;width:220px;margin-left:auto;}
+.f-search:focus{border-color:color-mix(in srgb, var(--accent) 38%, transparent);}
 
 /* ── BODY ── */
 .body-wrap{padding:18px 20px;max-width:1100px;margin:0 auto;}
-.state-msg{text-align:center;padding:60px 20px;color:#64748B;font-size:13px;}
-.state-msg.err{color:#EF4444;}
+.state-msg{text-align:center;padding:60px 20px;color:var(--text-3);font-size:13px;}
+.state-msg.err{color:var(--c-close);}
 
 .overview-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-.stat-tile{background:#12121A;border:1px solid #1E1E2E;border-radius:8px;padding:12px 16px;flex:1;min-width:150px;}
-.stat-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.stat-value{font-family:monospace;font-size:22px;font-weight:700;color:#E2E8F0;}
-.stat-sub{font-size:10px;color:#64748B;margin-top:3px;}
+.stat-tile{background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;flex:1;min-width:150px;}
+.stat-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.stat-value{font-family:monospace;font-size:22px;font-weight:700;color:var(--text-1);}
+.stat-sub{font-size:10px;color:var(--text-3);margin-top:3px;}
 
-.section{background:#0F0F1A;border:1px solid #1E1E2E;border-radius:10px;margin-bottom:18px;overflow:hidden;}
-.section-hdr{padding:14px 18px;border-bottom:1px solid #1E1E2E;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.section-title{font-size:14px;font-weight:700;}
-.section-sub{font-size:11px;color:#64748B;}
+.section{background:var(--bg-1);border:1px solid var(--border);border-radius:10px;margin-bottom:18px;overflow:hidden;}
+.section-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.section-title{font-size:14px;font-weight:700;color:var(--text-1);}
+.section-sub{font-size:11px;color:var(--text-3);}
 .section-body{padding:16px 18px;}
-.sec-label{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px;}
+.sec-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px;}
 .sec-label:not(:first-child){margin-top:18px;}
 
 /* ── BAR CHART (rounded, single-hue length encoding; legend used only for multi-series) ── */
 .legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#94A3B8;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2);}
 .legend-swatch{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
 .bar-row{display:flex;align-items:center;gap:10px;padding:5px 0;}
-.bar-label{width:150px;flex-shrink:0;font-size:11px;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:10px;background:#1A1A28;border-radius:5px;overflow:hidden;}
+.bar-label{width:150px;flex-shrink:0;font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:10px;background:var(--border-soft);border-radius:5px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:5px;min-width:2px;transition:width .3s;}
-.bar-value{width:76px;flex-shrink:0;text-align:right;font-family:monospace;font-size:11px;color:#E2E8F0;}
-.bar-n{font-size:9px;color:#374151;margin-left:4px;}
-.bar-empty{font-size:11px;color:#374151;padding:8px 0;}
+.bar-value{width:76px;flex-shrink:0;text-align:right;font-family:monospace;font-size:11px;color:var(--text-1);}
+.bar-n{font-size:9px;color:var(--text-4);margin-left:4px;}
+.bar-empty{font-size:11px;color:var(--text-4);padding:8px 0;}
 
 /* ── VENUE CARDS ── */
 .venue-grid{display:flex;gap:10px;flex-wrap:wrap;}
-.venue-card{flex:1;min-width:150px;background:#12121A;border:1px solid #1E1E2E;border-radius:8px;padding:10px 14px;border-left:3px solid transparent;}
-.venue-name{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.venue-card{flex:1;min-width:150px;background:var(--bg-3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;border-left:3px solid transparent;}
+.venue-name{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;color:var(--text-1);}
 .venue-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
 .venue-stat{font-family:monospace;font-size:16px;font-weight:700;margin-top:6px;}
-.venue-sub{font-size:10px;color:#64748B;margin-top:2px;}
+.venue-sub{font-size:10px;color:var(--text-3);margin-top:2px;}
 
 /* ── SESSIONS TABLE ── */
 .tbl-wrap{overflow-x:auto;}
 table.sessions{width:100%;border-collapse:collapse;font-size:12px;}
-table.sessions th{text-align:left;font-size:9px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding:6px 10px;border-bottom:1px solid #1E1E2E;white-space:nowrap;}
-table.sessions td{padding:8px 10px;border-bottom:1px solid #14141F;white-space:nowrap;}
-table.sessions tbody tr:hover{background:#12121A;}
+table.sessions th{text-align:left;font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding:6px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
+table.sessions td{padding:8px 10px;border-bottom:1px solid var(--border-soft);white-space:nowrap;color:var(--text-1);}
+table.sessions tbody tr:hover{background:var(--bg-3);}
 .venue-chip{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;}
-.open-link{font-size:11px;color:#6E56F8;text-decoration:none;font-weight:600;}
+.open-link{font-size:11px;color:var(--accent);text-decoration:none;font-weight:600;}
 .open-link:hover{text-decoration:underline;}
 
 @media (max-width:640px){
@@ -91,6 +93,15 @@ table.sessions tbody tr:hover{background:#12121A;}
   .stat-tile{min-width:0;flex:1 1 45%;}
   .bar-label{width:96px;font-size:10px;}
   .venue-card{min-width:0;flex:1 1 100%;}
+}
+
+/* ── TABLET ── */
+@media (min-width:641px) and (max-width:1024px){
+  .header{padding:10px 16px;}
+  .filter-bar{padding:8px 16px;}
+  .body-wrap{padding:16px;max-width:100%;}
+  .stat-tile{min-width:0;flex:1 1 30%;}
+  .bar-label{width:120px;}
 }
 </style>
 </head>
@@ -108,6 +119,7 @@ table.sessions tbody tr:hover{background:#12121A;}
   <div class="hdr-btns">
     <button class="btn-sm" onclick="loadReport()">↻ Refresh</button>
     <a class="btn-sm" href="index.html">← Tracker</a>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
   </div>
 </div>
 
@@ -211,16 +223,16 @@ function renderFireToServe(bucket){
 
 function renderVenueCompare(bucket){
   const venues=bucket.uc.venues;
-  const legend=venues.map(v=>`<div class="legend-item"><span class="legend-swatch" style="background:${VENUE_COLORS[v]||"#64748B"}"></span>${esc(v)}</div>`).join("");
+  const legend=venues.map(v=>`<div class="legend-item"><span class="legend-swatch" style="background:${VENUE_COLORS[v]||"var(--text-3)"}"></span>${esc(v)}</div>`).join("");
   const stats=venues.map(v=>{
     const list=bucket.byVenue[v]||[];
     const avgDur=avg(list.map(s=>s.totalDur));
     return {venue:v,avgDur,sessions:new Set(list.map(s=>s.session.id)).size,tx:list.length};
   });
   const cards=stats.map(s=>`
-    <div class="venue-card" style="border-left-color:${VENUE_COLORS[s.venue]||"#64748B"}">
-      <div class="venue-name"><span class="venue-dot" style="background:${VENUE_COLORS[s.venue]||"#64748B"}"></span>${esc(s.venue)}</div>
-      <div class="venue-stat" style="color:${VENUE_COLORS[s.venue]||"#E2E8F0"}">${s.avgDur!==null?fmtDur(s.avgDur):"—"}</div>
+    <div class="venue-card" style="border-left-color:${VENUE_COLORS[s.venue]||"var(--text-3)"}">
+      <div class="venue-name"><span class="venue-dot" style="background:${VENUE_COLORS[s.venue]||"var(--text-3)"}"></span>${esc(s.venue)}</div>
+      <div class="venue-stat" style="color:${VENUE_COLORS[s.venue]||"var(--text-1)"}">${s.avgDur!==null?fmtDur(s.avgDur):"—"}</div>
       <div class="venue-sub">avg visit &nbsp;·&nbsp; ${s.sessions} session${s.sessions!==1?"s":""} &nbsp;·&nbsp; ${s.tx} group${s.tx!==1?"s":""}</div>
     </div>`).join("");
   return `<div class="legend-row">${legend}</div><div class="venue-grid">${cards}</div>`;
@@ -232,7 +244,7 @@ function renderSessionsTable(bucket){
     const txForSession=bucket.txStats.filter(t=>t.session.id===s.id);
     const avgDur=avg(txForSession.map(t=>t.totalDur));
     const avgCompletion=avg(txForSession.map(t=>t.completion));
-    const venueChip=s.venue?`<span class="venue-chip" style="background:${(VENUE_COLORS[s.venue]||"#6E56F8")}20;color:${VENUE_COLORS[s.venue]||"#6E56F8"}">${esc(s.venue)}</span>`:"";
+    const venueChip=s.venue?`<span class="venue-chip" style="background:${tint(VENUE_COLORS[s.venue]||"var(--accent)",20)};color:${VENUE_COLORS[s.venue]||"var(--accent)"}">${esc(s.venue)}</span>`:"";
     return `<tr>
       <td>${esc(s.label)}</td>
       <td>${venueChip}</td>
@@ -266,8 +278,8 @@ function renderSection(key,bucket){
     <div class="section-body">
       <div class="overview-grid" style="margin-bottom:16px">
         <div class="stat-tile"><div class="stat-label" style="color:${uc.chartColor}">${esc(uc.durationLabel)}</div><div class="stat-value">${avgDur!==null?fmtDur(avgDur):"—"}</div><div class="stat-sub">average</div></div>
-        <div class="stat-tile"><div class="stat-label" style="color:#10B981">Avg Completion</div><div class="stat-value">${pct(avgCompletion)}</div><div class="stat-sub">of ${buildSteps(uc.groups).length} steps</div></div>
-        <div class="stat-tile"><div class="stat-label" style="color:#F59E0B">Avg Payment Processing</div><div class="stat-value">${avgPay!==null?fmtDur(avgPay):"—"}</div><div class="stat-sub">initiated → completed</div></div>
+        <div class="stat-tile"><div class="stat-label" style="color:var(--c-serve)">Avg Completion</div><div class="stat-value">${pct(avgCompletion)}</div><div class="stat-sub">of ${buildSteps(uc.groups).length} steps</div></div>
+        <div class="stat-tile"><div class="stat-label" style="color:var(--c-payment)">Avg Payment Processing</div><div class="stat-value">${avgPay!==null?fmtDur(avgPay):"—"}</div><div class="stat-sub">initiated → completed</div></div>
       </div>
       ${key==='clubs'?`<div class="sec-label">Venue Comparison</div>${renderVenueCompare(bucket)}`:""}
       <div class="sec-label">${esc(uc.fireSectionLabel)}</div>
@@ -309,10 +321,10 @@ function renderReport(){
   const overviewCompletion=avg(allTxStats.map(s=>s.completion));
 
   let html=`<div class="overview-grid">
-    <div class="stat-tile"><div class="stat-label" style="color:#6E56F8">Total Sessions</div><div class="stat-value">${filtered.length}</div><div class="stat-sub">saved</div></div>
-    <div class="stat-tile"><div class="stat-label" style="color:#10B981">Total Observations</div><div class="stat-value">${allTxStats.length}</div><div class="stat-sub">tables × transactions</div></div>
-    <div class="stat-tile"><div class="stat-label" style="color:#F59E0B">Avg Duration (all)</div><div class="stat-value">${overviewDur!==null?fmtDur(overviewDur):"—"}</div><div class="stat-sub">across both use cases</div></div>
-    <div class="stat-tile"><div class="stat-label" style="color:#94A3B8">Avg Completion (all)</div><div class="stat-value">${pct(overviewCompletion)}</div><div class="stat-sub">steps done</div></div>
+    <div class="stat-tile"><div class="stat-label" style="color:var(--accent)">Total Sessions</div><div class="stat-value">${filtered.length}</div><div class="stat-sub">saved</div></div>
+    <div class="stat-tile"><div class="stat-label" style="color:var(--c-serve)">Total Observations</div><div class="stat-value">${allTxStats.length}</div><div class="stat-sub">tables × transactions</div></div>
+    <div class="stat-tile"><div class="stat-label" style="color:var(--c-payment)">Avg Duration (all)</div><div class="stat-value">${overviewDur!==null?fmtDur(overviewDur):"—"}</div><div class="stat-sub">across both use cases</div></div>
+    <div class="stat-tile"><div class="stat-label" style="color:var(--text-2)">Avg Completion (all)</div><div class="stat-value">${pct(overviewCompletion)}</div><div class="stat-sub">steps done</div></div>
   </div>`;
 
   if(filters.useCase==='all'||filters.useCase==='finedining'){
